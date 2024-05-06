@@ -1,0 +1,14 @@
+version: '3.8'
+name: 'sales-analysis-app'
+
+services:
+  app:
+    container_name: 'application'
+    build:
+      context: ./.devcontainer
+      dockerfile: Dockerfile
+    ports:
+      - '8501:8501'
+    restart: always
+    volumes:
+      - .:/app

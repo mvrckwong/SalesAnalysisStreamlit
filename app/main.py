@@ -1,5 +1,4 @@
 from config_path import *
-
 import pandas as pd  
 import plotly.express as px
 import streamlit as st
@@ -19,7 +18,7 @@ df = pd.read_csv(data)
 df["hour"] = pd.to_datetime(df["Time"], format="%H:%M").dt.hour
 
 # Sidebar
-st.sidebar.header("Please Filter Here:")
+st.sidebar.header("Filters")
 city = st.sidebar.multiselect(
     "Select the City:",
     options=df["City"].unique(),

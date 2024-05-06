@@ -10,12 +10,12 @@ else
 endif
 
 # Run the streamlit application locally
-run_app:
-	$(PY) -m streamlit run app$(SEP)main.py
+run_app_local:
+	$(PY) -m streamlit run app$(SEP)main.py --server.port 8500
 
 # Run the streamlit application using poetry
 run_app_poetry:
-	poetry run streamlit run app$(SEP)main.py
+	poetry run streamlit run app$(SEP)main.py --server.port 8503
 
 # Run the streamlit application using docker
 run_app_docker:

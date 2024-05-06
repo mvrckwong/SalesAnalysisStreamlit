@@ -1,1 +1,1 @@
-# SalesAnalysisStreamlit
+# Sales Analysis Application

@@ -1,22 +1,24 @@
 from config_path import *
+
 import pandas as pd  
 import plotly.express as px
 import streamlit as st
 
+# Set page config
 st.set_page_config(
     page_title="Sales Dashboard", 
     page_icon="📊", 
     layout="wide"
 )
 
-# ---- READ DATA ----
-data = 'supermarket_sales.csv'
+# Read the data
+data = DATA_DIR / 'supermarket_sales.csv'
 df = pd.read_csv(data)
 
-# ---- MODIFY THE DATA ---- 
+# Modify the data
 df["hour"] = pd.to_datetime(df["Time"], format="%H:%M").dt.hour
 
-# ---- SIDEBAR ----
+# Sidebar
 st.sidebar.header("Please Filter Here:")
 city = st.sidebar.multiselect(
     "Select the City:",

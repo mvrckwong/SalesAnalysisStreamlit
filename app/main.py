@@ -54,7 +54,7 @@ def plot_bar_chart(df, group_by, title):
     """Plot and display a bar chart."""
     chart_data = df.groupby(by=[group_by]).sum()[["Total"]].sort_values(by="Total")
     st.subheader(title)
-    st.bar_chart(chart_data)
+    st.bar_chart(chart_data, use_container_width=True)
     st.write(" ")
 
 def main():

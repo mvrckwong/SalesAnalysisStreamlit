@@ -1,14 +1,35 @@
+# Define the docker-compose file version (optional but recommended)
+version: '3.8'
+
+# Define the project name (optional, defaults to directory name)
 name: 'sales-streamlit-dev'
 
 services:
+  # Define the application service
   app:
     build:
-      context: ./.devcontainer
-      dockerfile: Dockerfile
-    command:
-      ["streamlit", "run", "app/main.py"]
+      # Specify the build context (current directory)
+      context: .
+      # Specify the Dockerfile to use
+      dockerfile: Dockerfile.uv # Make sure this filename matches your Dockerfile
+    # The command to run is now specified in the Dockerfile's CMD instruction,
+    # so we don't need to specify it here unless overriding.
+    # command: ["streamlit", "run", "app/main.py"] # Moved to Dockerfile CMD
+
     ports:
+      # Map host port 8501 to container port 8501
       - '8501:8501'
+
+    # Define the restart policy
     restart: always
-    volumes:
-      - .:/app
+
+    # --- Development Volume Mount ---
+    # The volume mount below is commented out.
+    # If you uncomment it for development (live code reloading):
+    # 1. Your local code directory will replace the code copied into the image at /home/appuser/app.
+    # 2. Changes in your local code will be reflected inside the container.
+    # 3. Dependencies (streamlit, etc.) will still come from the virtual environment
+    #    copied during the image build (/opt/venv).
+    #
+    # volumes:
+    #   - .:/home/appuser/app # Mount local code to the container's working directory

@@ -1,12 +1,12 @@
-version: '3.8'
-name: 'sales-analysis-app'
+name: 'sales-streamlit-dev'
 
 services:
   app:
-    container_name: 'streamlit-app'
     build:
       context: ./.devcontainer
       dockerfile: Dockerfile
+    command:
+      ["streamlit", "run", "app/main.py"]
     ports:
       - '8501:8501'
     restart: always

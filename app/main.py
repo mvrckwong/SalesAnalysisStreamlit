@@ -1,7 +1,9 @@
 import pandas as pd  
 import streamlit as st
 from pathlib import Path
-from config_path import *
+
+from core.logging import APP_DIR, PROJ_DIR, DATA_DIR, \
+    TEST_DIR, CONT_DIR
 
 # Constants
 DATA_PATH = Path("path/to/data")  # Change this to your actual data directory

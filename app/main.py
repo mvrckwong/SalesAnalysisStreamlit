@@ -11,7 +11,7 @@ DATA_FILE = DATA_DIR / 'supermarket_sales.csv'
 st.set_page_config(
     page_title="Sales Dashboard", 
     page_icon="📊", 
-    layout="wide"
+    layout="centered"
 )
 
 @st.cache_data

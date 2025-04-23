@@ -45,17 +45,19 @@ RUN groupadd -g ${GID} ${APP_GROUP} && \
 # Install runtime system dependencies (if any are needed)
 # Example: RUN apt-get update && apt-get install -y --no-install-recommends libpq5 && rm -rf /var/lib/apt/lists/*
 
+# Set environment variable
+ENV PROJECT_DIR=/app \
+    ENVIRONMENT=prod
+
 # Set the final working directory
-WORKDIR /app
+WORKDIR ${PROJECT_DIR}
 
 # Copy installed packages from the builder stage's prefix install location
-# This copies the contents of /install (like lib/python3.11/site-packages) into the root of the runtime image,
-# merging them with the system Python installation.
 COPY --from=builder /install /usr/local
 
 # Copy the application code
-COPY --chown=${APP_USER}:${APP_GROUP} ./app ./app
-COPY --chown=${APP_USER}:${APP_GROUP} ./data ./data
+COPY --chown=${APP_USER}:${APP_GROUP} ./app ${PROJECT_DIR}/app
+COPY --chown=${APP_USER}:${APP_GROUP} ./data ${PROJECT_DIR}/data
 
 # Switch to the non-root user
 USER ${APP_USER}

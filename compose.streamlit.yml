@@ -1,7 +1,3 @@
-# Define the docker-compose file version (optional but recommended)
-version: '3.8'
-
-# Define the project name (optional, defaults to directory name)
 name: 'sales-streamlit-dev'
 
 services:
@@ -11,11 +7,11 @@ services:
       # Specify the build context (current directory)
       context: .
       # Specify the Dockerfile to use
-      dockerfile: Dockerfile.uv # Make sure this filename matches your Dockerfile
+      dockerfile: Dockerfile # Make sure this filename matches your Dockerfile
     # The command to run is now specified in the Dockerfile's CMD instruction,
     # so we don't need to specify it here unless overriding.
-    # command: ["streamlit", "run", "app/main.py"] # Moved to Dockerfile CMD
-
+    command: ["streamlit", "run", "app/main.py"] # Moved to Dockerfile CMD
+    tty: true # Allocate a pseudo-TTY for the container
     ports:
       # Map host port 8501 to container port 8501
       - '8501:8501'

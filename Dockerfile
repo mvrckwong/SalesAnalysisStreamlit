@@ -25,7 +25,6 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
     # If using hashes: pip install --no-cache-dir --prefix=/install --require-hashes -r requirements.txt
 
-# --- Stage 2: Runtime ---
 # Use the same slim variant for the final runtime image
 FROM python:3.11-slim-bookworm
 
@@ -55,7 +54,8 @@ WORKDIR /app
 COPY --from=builder /install /usr/local
 
 # Copy the application code
-COPY --chown=${APP_USER}:${APP_GROUP} . .
+COPY --chown=${APP_USER}:${APP_GROUP} ./app ./app
+COPY --chown=${APP_USER}:${APP_GROUP} ./data ./data
 
 # Switch to the non-root user
 USER ${APP_USER}

@@ -1,31 +1,17 @@
 name: 'sales-streamlit-dev'
 
 services:
-  # Define the application service
   app:
     build:
-      # Specify the build context (current directory)
       context: .
-      # Specify the Dockerfile to use
-      dockerfile: Dockerfile # Make sure this filename matches your Dockerfile
-    # The command to run is now specified in the Dockerfile's CMD instruction,
-    # so we don't need to specify it here unless overriding.
-    command: ["streamlit", "run", "app/main.py"] # Moved to Dockerfile CMD
-    tty: true # Allocate a pseudo-TTY for the container
-    ports:
-      # Map host port 8501 to container port 8501
-      - '8501:8501'
-
-    # Define the restart policy
+      dockerfile: Dockerfile
+    command: ["streamlit", "run", "app/main.py", "--server.port=8501"]
     restart: always
-
-    # --- Development Volume Mount ---
-    # The volume mount below is commented out.
-    # If you uncomment it for development (live code reloading):
-    # 1. Your local code directory will replace the code copied into the image at /home/appuser/app.
-    # 2. Changes in your local code will be reflected inside the container.
-    # 3. Dependencies (streamlit, etc.) will still come from the virtual environment
-    #    copied during the image build (/opt/venv).
-    #
-    # volumes:
-    #   - .:/home/appuser/app # Mount local code to the container's working directory
+    ports:
+      - '8501:8501'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    

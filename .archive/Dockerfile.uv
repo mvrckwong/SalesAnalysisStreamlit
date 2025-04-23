@@ -1,0 +1,68 @@
+# Use the official uv image which includes Python 3.12 and uv
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    # Tell uv to install packages globally into the system Python
+    # instead of creating a virtual environment.
+    UV_SYSTEM_PYTHON=1
+
+# Create a non-root user and group for security
+# Create the user's home directory explicitly
+RUN groupadd --system app && \
+    useradd --system --gid app --create-home --home-dir /home/appuser --shell /bin/bash appuser
+
+# Set the working directory
+WORKDIR /app
+
+# Copy dependency definition files (needed if other deps are installed later)
+# Ensure root owns these initially for the RUN command below
+COPY pyproject.toml uv.lock ./
+
+# Install dependencies into the system Python environment
+# Rely on UV_SYSTEM_PYTHON=1 environment variable
+# Mount cache directory for efficiency
+# --- MODIFICATION: Use 'uv pip install' directly for streamlit ---
+RUN --mount=type=cache,target=/root/.cache/uv \
+    echo ">>> Installing streamlit directly using 'uv pip install --system'..." && \
+    # Explicitly install streamlit into the system python
+    uv pip install --system streamlit && \
+    echo ">>> Streamlit installation attempt finished." && \
+    # --- Add checks for installation locations ---
+    echo ">>> Checking common installation locations..." && \
+    echo "--- Contents of /usr/local/bin ---" && \
+    ls -l /usr/local/bin || echo "/usr/local/bin not found or empty." && \
+    echo "--- Contents of /usr/local/lib/python3.12/site-packages ---" && \
+    ls -l /usr/local/lib/python3.12/site-packages || echo "/usr/local/lib/python3.12/site-packages not found or empty." && \
+    echo "--- Checking PATH variable (as root) ---" && \
+    echo $PATH
+
+# --- Debugging Step (Post streamlit install) ---
+# Check if streamlit is now available in the system PATH
+RUN echo ">>> Checking for streamlit executable in PATH (as root)..." && \
+    which streamlit && \
+    echo ">>> Checking streamlit version (as root)..." && \
+    streamlit --version
+
+# Copy the rest of the application source code
+# Now change ownership to the appuser
+COPY --chown=appuser:app . /app
+
+# Switch to the non-root user
+USER appuser
+
+# --- Debugging Step (as appuser) ---
+# Check if streamlit is available for the final user
+RUN echo ">>> Checking for streamlit executable in PATH (as appuser)..." && \
+    which streamlit || echo "Streamlit not found in PATH for appuser" && \
+    echo ">>> Current PATH for appuser is: $PATH"
+# --- End Debugging Step ---
+
+
+# Expose the port Streamlit runs on
+EXPOSE 8501
+
+# Set the default command to run when the container starts
+# Streamlit should be directly available in the PATH now
+# Ensure 'app/main.py' is the correct path relative to '/app'
+CMD ["streamlit", "run", "app/main.py", "--server.port=8501", "--server.address=0.0.0.0"]

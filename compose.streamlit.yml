@@ -1,0 +1,17 @@
+name: 'general-streamlit-prod'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["streamlit", "run", "app/main.py"]
+    restart: always
+    ports:
+      - '8501:8501'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    

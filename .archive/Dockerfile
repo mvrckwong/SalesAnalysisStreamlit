@@ -12,9 +12,3 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir --upgrade setuptools && \
     pip install --no-cache-dir --upgrade -r requirements.txt && \
     pip install --no-cache-dir --upgrade watchdog
-
-# Exposing port
-EXPOSE 8501
-
-# Starting Streamlit
-CMD ["streamlit", "run", "app/main.py"]

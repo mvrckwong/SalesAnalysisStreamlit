@@ -1,4 +1,4 @@
-name: 'sales-streamlit-dev'
+name: 'general-streamlit-prod'
 
 services:
   app:
